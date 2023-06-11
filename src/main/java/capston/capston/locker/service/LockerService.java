@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +34,6 @@ import java.util.List;
 public class LockerService implements LockerServiceCommandImpl, LockerServiceQueryImpl{
 
     private final LockerRepository lockerRepository;
-    private  final SaleProductService saleProductService;
-    private  final UserService userService;
 
     // query
     @Override
@@ -57,6 +56,13 @@ public class LockerService implements LockerServiceCommandImpl, LockerServiceQue
         );
         return locker;
     }
+
+    @Override
+    public List<Locker> listNotAssignLocker() {
+        return lockerRepository.ListNotAssignLocker();
+    }
+
+
 
     /// command
 
@@ -82,24 +88,24 @@ public class LockerService implements LockerServiceCommandImpl, LockerServiceQue
     // 물품 배정하기
     // 배정 후 구매자 판매자 에게 문자 보내기
     @Override
-    public LockerAssignResponseDTO assignLocker(String buyStudentId, long productId, long lockerId, Authentication authentication) {
-        Locker locker = findByIdLocker(lockerId); // 배정 받지 않은 사물함 찾기
-        if(locker.isCheckAssign()){
-            // 사물함이 이미 배정 받았다면
-            throw  new CustomException(ErrorCode.BadAssignLockerException);
+    public Locker assignLocker( SaleProduct saleProduct, Authentication authentication) {
+
+        User user = ((PrincipalDetails) authentication.getPrincipal()).getUser();
+
+        List<Locker> lockers = listNotAssignLocker();
+        // 사물함이 비어 있을시
+        if(lockers.isEmpty()){
+            throw new CustomException(ErrorCode.BadNoneLockerException);
+        }else{
+            Random random = new Random();
+            int randomIndex = random.nextInt(lockers.size());
+            Locker locker = lockers.get(randomIndex); // 사물함 찾기
+            locker.assignLocker(user,saleProduct);
+            save(locker);
+            return  locker;
         }
 
-        User user = ((PrincipalDetails)authentication.getPrincipal()).getUser(); //  로그인유저
-        SaleProduct saleProduct = saleProductService.findById(productId);// 상품 찾기
 
-        if(!saleProduct.getUser().getStudentId().equals(user.getStudentId())){
-            // 로그인 유저가 판매유저가 아닌 경우
-            throw  new CustomException(ErrorCode.BadNotSaleUserException);
-        }
-        User buyUser = userService.findByStudentId(buyStudentId); // 구매 유저 찾기
-        locker.assignLocker(buyUser,saleProduct);
-        save(locker);
-        return LockerAssignResponseDTO.toLockerAssignResponseDTO(locker);
     }
 
     // 판매자
@@ -123,11 +129,12 @@ public class LockerService implements LockerServiceCommandImpl, LockerServiceQue
     // 사물함에 물건 넣기
     // 물건 넣은 후 문자 보내기
     @Override
-    public LockerProductResponseDTO putProduct(long lockerId) {
-        Locker locker = findByIdLocker(lockerId);
+    public LockerProductResponseDTO putProduct(Locker locker) {
+
         if(locker.isCheckProduct()){
             throw  new CustomException(ErrorCode.BadPutLockerException);
         }
+
         locker.putProductLocker(); // 물건 넣고
         save(locker); // 저장하기
 
@@ -136,8 +143,7 @@ public class LockerService implements LockerServiceCommandImpl, LockerServiceQue
     }
 
     @Override
-    public LockerProductResponseDTO pushProduct(long lockerId) {
-        Locker locker = findByIdLocker(lockerId);
+    public LockerProductResponseDTO pushProduct(Locker locker) {
         if(!locker.isCheckProduct()){
             throw new CustomException(ErrorCode.BadPushLockerException);
         }

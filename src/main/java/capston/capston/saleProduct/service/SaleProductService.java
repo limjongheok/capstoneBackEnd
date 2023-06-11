@@ -4,23 +4,25 @@ import capston.capston.Error.CustomException;
 import capston.capston.Error.ErrorCode;
 import capston.capston.auth.PrincipalDetails;
 import capston.capston.order.model.Order;
+import capston.capston.saleProduct.dto.SaleProductSearchDTO.SaleProductSearchResponseDTO;
 import capston.capston.saleProduct.dto.saleProductCreateDTO.SaleProductCreateRequestDTO;
 import capston.capston.saleProduct.dto.saleProductCreateDTO.SaleProductCreateResponseDTO;
 import capston.capston.saleProduct.dto.saleProductFindAll.SaleProductFindAllResponseDTO;
 import capston.capston.saleProduct.dto.saleProductFindId.SaleProductFindIdResponseDTO;
 import capston.capston.saleProduct.dto.saleProductFindmyDTO.SaleProductFindMyResponseDTO;
-import capston.capston.saleProduct.dto.saleProductOrderConfirmationDTO.SaleProductOrderConfirmationResponseDTO;
 import capston.capston.saleProduct.model.SaleProduct;
 import capston.capston.saleProduct.repository.SaleProductRepository;
 import capston.capston.user.model.User;
 import capston.capston.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -50,8 +52,13 @@ public class SaleProductService implements SaleProductCommendServiceImpl, SalePr
 
 
     @Override
-    public List<SaleProduct> findNotOfferProductAll() {
-        return saleProductRepository.findNoneOfferProduct();
+    public List<SaleProduct> findNotOrderProductAll() {
+        return saleProductRepository.findNoneOrderProduct();
+    }
+
+    @Override
+    public List<SaleProduct> searchProduct(String title) {
+        return  saleProductRepository.getProductList(title);
     }
 
     @Override
@@ -77,17 +84,20 @@ public class SaleProductService implements SaleProductCommendServiceImpl, SalePr
         for(SaleProduct saleProduct : saleProducts){
             saleProductFindMyResponseDTOS.add(SaleProductFindMyResponseDTO.toSaleProductFindMyResponseDTO(saleProduct));
         }
+        Collections.reverse(saleProductFindMyResponseDTOS);
         return saleProductFindMyResponseDTOS;
     }
 
     @Override
     public List<SaleProductFindAllResponseDTO> findAllProduct() {
-        List<SaleProduct> saleProducts = findNotOfferProductAll();
+        List<SaleProduct> saleProducts = findNotOrderProductAll();
 
         List<SaleProductFindAllResponseDTO> saleProductFindAllResponseDTOS = new ArrayList<>();
         for(SaleProduct saleProduct : saleProducts){
             saleProductFindAllResponseDTOS.add(SaleProductFindAllResponseDTO.toSaleProductFindAllResponseDTO(saleProduct));
         }
+
+        Collections.reverse(saleProductFindAllResponseDTOS);
         return saleProductFindAllResponseDTOS;
     }
 
@@ -97,24 +107,23 @@ public class SaleProductService implements SaleProductCommendServiceImpl, SalePr
         return SaleProductFindIdResponseDTO.toSaleProductFindIdResponseDTO(saleProduct);
     }
 
-    // 상품확정은 판매자만 할 수 있다.
     @Override
-    public SaleProductOrderConfirmationResponseDTO orderConfirmation(String buyStudentId, long productId, long offerPrice, Authentication authentication) {
+    public List<SaleProductSearchResponseDTO> searchProducts(String title) {
+        List<SaleProduct> saleProducts = searchProduct(title);
+        List<SaleProductSearchResponseDTO> saleProductSearchResponseDTOS = new ArrayList<>();
 
-        User user = ((PrincipalDetails)authentication.getPrincipal()).getUser(); // 로그인 사람
-        SaleProduct saleProduct = findById(productId);
-        if(saleProduct.isOfferState()){ // 상품이 확정 되어 있으면
-            throw new CustomException(ErrorCode.BadConfirmationException);
+        for(SaleProduct saleProduct : saleProducts){
+            saleProductSearchResponseDTOS.add(SaleProductSearchResponseDTO.toSaleProductSearchResponseDTO(saleProduct));
         }
-        if(!user.getStudentId().equals(saleProduct.getUser().getStudentId())){
-            //현재 로그인한 인원이 판매자가 아닐 경우
-            throw new CustomException(ErrorCode.BadNotSaleUserException);
-        }
+        Collections.reverse(saleProducts);
+        return saleProductSearchResponseDTOS;
+    }
 
-        saleProduct.confirmationProduct(offerPrice,buyStudentId);
-        save(saleProduct);
-
-        return  SaleProductOrderConfirmationResponseDTO.toSaleProductOrderConfirmationResponseDTO(saleProduct);
+    @Override
+    public void orderProduct(SaleProduct product, Order order , Authentication authentication){
+        User user = ((PrincipalDetails)authentication.getPrincipal()).getUser();
+        product.order(order,user);
+        save(product);
 
     }
 

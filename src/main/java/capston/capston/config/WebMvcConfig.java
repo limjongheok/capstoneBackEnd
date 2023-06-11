@@ -13,6 +13,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000")
                 .allowedOrigins("http://127.0.0.1:5000")
+                .allowedOriginPatterns("*")
                 .allowedOrigins("http://59.26.59.60:5000")
                 .allowedOrigins("http://59.26.59.60:8080")
                 .allowedOrigins("http://localhost")

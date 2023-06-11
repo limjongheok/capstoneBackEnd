@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.sound.midi.SysexMessage;
 import java.time.LocalDateTime;
 
 @Getter
@@ -13,39 +14,35 @@ public class OrderResponseDTO {
 
     private  long id;
 
-    private String title;
 
     private String content;
 
     private String saleProductName;
 
     private String imgUrl;
-    private  long offerPrice; // 판매 가격
     private String studentId; // 판매자 아이디
     private LocalDateTime createDate;
     private  LocalDateTime modifiedDate;
 
     @Builder
-    private OrderResponseDTO(long id, String title, String content, String saleProductName, String imgUrl, long offerPrice, String studentId, LocalDateTime createDate, LocalDateTime modifiedDate) {
+    private OrderResponseDTO(long id, String content, String saleProductName, String imgUrl, String studentId, LocalDateTime createDate, LocalDateTime modifiedDate) {
         this.id = id;
-        this.title = title;
         this.content = content;
         this.saleProductName = saleProductName;
         this.imgUrl = imgUrl;
-        this.offerPrice = offerPrice;
         this.studentId = studentId;
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
     }
 
+
+    // 내가 올린 물건 , 구매자 를 알아야함
     public static OrderResponseDTO toOrderSaleResponseDTO(Order order){
         return  OrderResponseDTO.builder()
                 .id(order.getId())
-                .title(order.getSaleProduct().getTitle())
                 .content(order.getSaleProduct().getContent())
                 .saleProductName(order.getSaleProduct().getSaleProductName())
                 .imgUrl(order.getSaleProduct().getImgUrl())
-                .offerPrice(order.getSaleProduct().getOfferPrice())
                 .studentId(order.getUser().getStudentId())
                 .createDate(order.getCreateDate())
                 .modifiedDate(order.getModifiedDate())
@@ -53,14 +50,14 @@ public class OrderResponseDTO {
 
     }
 
+    // 내가 구매한 물건 판매자를 알아야함
     public static  OrderResponseDTO toOrderBuyerResponseDTO(Order order){
+        System.out.println(order.getSaleProduct().getUser().getStudentId());
         return  OrderResponseDTO.builder()
                 .id(order.getId())
-                .title(order.getSaleProduct().getTitle())
                 .content(order.getSaleProduct().getContent())
                 .saleProductName(order.getSaleProduct().getSaleProductName())
                 .imgUrl(order.getSaleProduct().getImgUrl())
-                .offerPrice(order.getSaleProduct().getOfferPrice())
                 .studentId(order.getSaleProduct().getUser().getStudentId())
                 .createDate(order.getCreateDate())
                 .modifiedDate(order.getModifiedDate())

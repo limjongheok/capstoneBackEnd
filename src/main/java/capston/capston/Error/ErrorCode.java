@@ -16,6 +16,7 @@ public enum ErrorCode {
     BadEmailException(400,"BadEmailException","잘못된 형식의 이메일 입니다"),
     BadPhoneNumberException(400,"BadPhoneNumberException","잘못된 형식의 번호입니다"),
     BadAssignLockerException(400,"BadAssignException","사물함이 이미 지정 되었습니다"),
+    BadNoneLockerException(400,"BadNoneLockerException","사용가능한 사물함이 없습니다."),
     BadPasswordLockerException(400,"BadPasswordLockerException","사물함 번호가 틀렸습니다."),
     BadPutLockerException(400,"BadPutLockerException","사물함에 이미 물건이 있습니다."),
     BadPushLockerException(400,"BadPutLockerException","사물함에 물건이 없습니다."),

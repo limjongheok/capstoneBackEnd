@@ -13,23 +13,27 @@ import java.time.LocalDateTime;
 public class SaleProductFindIdResponseDTO {
     private  long id;
 
-    private String title;
 
     private String content;
 
     private String saleProductName;
 
+    private String saleStudentId;
+
     private String imgUrl;
+
+    private  long amount;
     private LocalDateTime createDate;
     private  LocalDateTime modifiedDate;
 
     @Builder
-    private SaleProductFindIdResponseDTO(long id, String title, String content, String saleProductName, String imgUrl, LocalDateTime createDate, LocalDateTime modifiedDate) {
+    private SaleProductFindIdResponseDTO(long id, String content, String saleProductName,String saleStudentId, String imgUrl,long amount, LocalDateTime createDate, LocalDateTime modifiedDate) {
         this.id = id;
-        this.title = title;
         this.content = content;
         this.saleProductName = saleProductName;
         this.imgUrl = imgUrl;
+        this.amount = amount;
+        this.saleStudentId = saleStudentId;
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
     }
@@ -37,10 +41,11 @@ public class SaleProductFindIdResponseDTO {
     public static SaleProductFindIdResponseDTO toSaleProductFindIdResponseDTO(SaleProduct saleProduct){
         return SaleProductFindIdResponseDTO.builder()
                 .id(saleProduct.getId())
-                .title(saleProduct.getTitle())
                 .content(saleProduct.getContent())
                 .saleProductName(saleProduct.getSaleProductName())
                 .imgUrl(saleProduct.getImgUrl())
+                .amount(saleProduct.getAmount())
+                .saleStudentId(saleProduct.getUser().getStudentId())
                 .createDate(saleProduct.getCreateDate())
                 .modifiedDate(saleProduct.getModifiedDate())
                 .build();

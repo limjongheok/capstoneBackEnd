@@ -14,23 +14,23 @@ import java.time.LocalDateTime;
 public class SaleProductFindMyResponseDTO {
     private  long id;
 
-    private String title;
-
     private String content;
 
     private String saleProductName;
 
     private String imgUrl;
+
+    private  long amount;
     private LocalDateTime createDate;
     private  LocalDateTime modifiedDate;
 
     @Builder
-    private SaleProductFindMyResponseDTO(long id, String title, String content, String saleProductName, String imgUrl, LocalDateTime createDate, LocalDateTime modifiedDate) {
+    private SaleProductFindMyResponseDTO(long id, String content, String saleProductName, String imgUrl,long amount, LocalDateTime createDate, LocalDateTime modifiedDate) {
         this.id = id;
-        this.title = title;
         this.content = content;
         this.saleProductName = saleProductName;
         this.imgUrl = imgUrl;
+        this.amount = amount;
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
     }
@@ -38,12 +38,12 @@ public class SaleProductFindMyResponseDTO {
     public static SaleProductFindMyResponseDTO toSaleProductFindMyResponseDTO(SaleProduct saleProduct){
         return SaleProductFindMyResponseDTO.builder()
                 .id(saleProduct.getId())
-                .title(saleProduct.getTitle())
                 .content(saleProduct.getContent())
                 .saleProductName(saleProduct.getSaleProductName())
                 .imgUrl(saleProduct.getImgUrl())
                 .createDate(saleProduct.getCreateDate())
                 .modifiedDate(saleProduct.getModifiedDate())
+                .amount(saleProduct.getAmount())
                 .build();
     }
 }

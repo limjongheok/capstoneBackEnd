@@ -53,7 +53,7 @@ public class KakaoPayService {
         parameters.add("partner_user_id", order.getSaleProduct().getUser().getUser());
         parameters.add("item_name", order.getSaleProduct().getSaleProductName());
         parameters.add("quantity", "1");
-        parameters.add("total_amount", String.valueOf(order.getSaleProduct().getOfferPrice()));
+        parameters.add("total_amount", String.valueOf(order.getSaleProduct().getAmount()));
         parameters.add("tax_free_amount", "0");
         parameters.add("approval_url", "http://59.26.59.60:8080/api/payment_inprogess?productId="+productId); // 성공 시 redirect url
         parameters.add("cancel_url", "http://localhost:8080/payment/cancel"); // 취소 시 redirect url

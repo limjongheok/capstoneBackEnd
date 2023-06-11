@@ -12,4 +12,8 @@ public interface LockerRepository extends JpaRepository<Locker, Long>, LockerRep
 
     @Override
     List<Locker> getNotAssignLocker(int buildingNum);
+
+    @Override
+    List<Locker> ListNotAssignLocker();
+
 }

@@ -11,8 +11,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class SaleProductCreateRequestDTO {
 
-    @NotNull
-    private String title;
 
     @NotNull
     private String content;
@@ -24,15 +22,13 @@ public class SaleProductCreateRequestDTO {
     private String imgUrl;
 
     @NotNull
-    private int amount;
+    private long amount;
     public SaleProduct toEntity(User user){
         return SaleProduct.builder()
                 .saleProductName(saleProductName)
                 .amount(this.amount)
                 .content(this.content)
                 .imgUrl(this.imgUrl)
-                .title(this.title)
-                .offerState(false)
                 .user(user)
                 .build();
     }

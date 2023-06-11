@@ -25,12 +25,12 @@ public class SaleProduct extends BaseTimeEntity {
     @JoinColumn(name = "User_Id")
     private User user;
 
-    @OneToOne(mappedBy = "saleProduct")
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "Order_ID")
     private Order order;
 
 
-    @Column(nullable = false)
-    private String title;
 
     @Column(nullable = false)
     private String content;
@@ -39,62 +39,49 @@ public class SaleProduct extends BaseTimeEntity {
     private String saleProductName;
 
     @Column(nullable = false)
-    private int amount;
+    private long amount;
 
     @Column(nullable = false)
     private String imgUrl;
 
-    @Column(nullable = false)
-    private  boolean offerState;
-
-    @Column(nullable = true)
-    private long offerPrice;
-
-    @Column(nullable = true)
-    private String offerStudentID;
 
     @Column(nullable = false)
-    private boolean orderStatus;
+    private boolean orderStatus; // 주문 생성 여부
+
+    private  String buyStudentId;
 
 
 
 
     @Builder
-    public SaleProduct(long id, User user, String title, String content, String saleProductName, int amount, String imgUrl,boolean offerState, long offerPrice, String offerStudentID,boolean orderStatus) {
+    public SaleProduct(long id, User user, String content, String saleProductName, long amount, String imgUrl, String buyStudentId) {
         this.id = id;
         this.user = user;
-        this.title = title;
         this.content = content;
         this.saleProductName = saleProductName;
         this.amount = amount;
         this.imgUrl = imgUrl;
-        this.offerState = offerState;
-        this.offerPrice = offerPrice;
-        this.offerStudentID = offerStudentID;
         this.orderStatus = false;
-    }
-    public void confirmationProduct(long offerPrice, String offerStudentID){
-        confirmation(offerPrice,offerStudentID);
+        this.buyStudentId = buyStudentId;
     }
 
-    public void order(Order order){
+
+    public void order(Order order, User user){
         orderProduct(order);
+        orderStudentId(user);
+        orderSuccess(); // 주문 생성 성공
     }
 
-    private  void confirmation(long offerPrice, String offerStudentID){
-        this.offerState = true;
-        this.offerStudentID = offerStudentID;
-        this.offerPrice = offerPrice;
+    private  void orderStudentId(User user){
+        this.buyStudentId = user.getStudentId();
     }
 
     private void orderProduct(Order order){
         this.order = order;
     }
 
-    public  void orderSuccessProduct(){
-        orderSuccess();
-    }
     private void orderSuccess(){
         this.orderStatus = true;
     }
+
 }

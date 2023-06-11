@@ -14,7 +14,6 @@ public class SaleProductCreateResponseDTO {
 
     private  long id;
 
-    private String title;
 
     private String content;
 
@@ -25,9 +24,8 @@ public class SaleProductCreateResponseDTO {
     private  LocalDateTime modifiedDate;
 
     @Builder
-    private SaleProductCreateResponseDTO(long id, String title, String content, String saleProductName, String imgUrl, LocalDateTime createDate, LocalDateTime modifiedDate) {
+    private SaleProductCreateResponseDTO(long id, String content, String saleProductName, String imgUrl, LocalDateTime createDate, LocalDateTime modifiedDate) {
         this.id = id;
-        this.title = title;
         this.content = content;
         this.saleProductName = saleProductName;
         this.imgUrl = imgUrl;
@@ -38,7 +36,6 @@ public class SaleProductCreateResponseDTO {
     public static  SaleProductCreateResponseDTO toSaleProductCreateResponseDTO(SaleProduct saleProduct){
         return SaleProductCreateResponseDTO.builder()
                 .id(saleProduct.getId())
-                .title(saleProduct.getTitle())
                 .content(saleProduct.getContent())
                 .saleProductName(saleProduct.getSaleProductName())
                 .imgUrl(saleProduct.getImgUrl())

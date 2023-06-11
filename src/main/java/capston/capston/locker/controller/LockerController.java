@@ -7,6 +7,7 @@ import capston.capston.locker.dto.lockerPasswordCheckDTO.LockerPasswordCheckResp
 import capston.capston.locker.dto.lockerProdctDTO.LockerProductResponseDTO;
 import capston.capston.locker.dto.lockerUnassignedDTO.LockerUnassignedRequestDTO;
 import capston.capston.locker.dto.lockerUnassignedDTO.LockerUnassignedResponseDTO;
+import capston.capston.locker.model.Locker;
 import capston.capston.locker.service.LockerService;
 import capston.capston.message.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -43,14 +44,14 @@ public class LockerController {
     }
 
     // 사물함 배정
-    @GetMapping("/api/web/locker/assign/{buyStudentId}/{productId}/{lockerId}")
-    public ResponseEntity<?> assignLocker(@PathVariable(value = "buyStudentId") String buyStudentId, @PathVariable(value = "productId") long productId, @PathVariable(value = "lockerId") long lockerId, Authentication authentication){
-
-        LockerAssignResponseDTO lockerAssignResponseDTO = lockerService.assignLocker(buyStudentId,productId,lockerId,authentication);
-        messageService.sendAssignBuyerLocker(buyStudentId,lockerId);
-        messageService.sendAssignSaleLocker(productId,lockerId);
-        return ResponseEntity.ok().body(createResponse(lockerAssignResponseDTO,"사물함 배정에 성공하였습니다."));
-    }
+//    @GetMapping("/api/web/locker/assign/{buyStudentId}/{productId}/{lockerId}")
+//    public ResponseEntity<?> assignLocker(@PathVariable(value = "buyStudentId") String buyStudentId, @PathVariable(value = "productId") long productId, @PathVariable(value = "lockerId") long lockerId, Authentication authentication){
+//
+//        LockerAssignResponseDTO lockerAssignResponseDTO = lockerService.assignLocker(buyStudentId,productId,lockerId,authentication);
+//        messageService.sendAssignBuyerLocker(buyStudentId,lockerId);
+//        messageService.sendAssignSaleLocker(productId,lockerId);
+//        return ResponseEntity.ok().body(createResponse(lockerAssignResponseDTO,"사물함 배정에 성공하였습니다."));
+//    }
 
 
     // 판매자 비번 검사 하여 문열기
@@ -71,16 +72,18 @@ public class LockerController {
     // 물건 넣기
     @GetMapping("/api/locker/sale/product/{lockerId}")
     public ResponseEntity<?> putProductLocker(@PathVariable(value = "lockerId") long lockerId){
-        LockerProductResponseDTO lockerProductResponseDTO = lockerService.putProduct(lockerId);
-        messageService.sendPutProductLocker(lockerId);
+        Locker locker = lockerService.findByIdLocker(lockerId);
+        LockerProductResponseDTO lockerProductResponseDTO = lockerService.putProduct(locker);
+        messageService.sendPutProductLocker(locker);
         return ResponseEntity.ok().body(createResponse(lockerProductResponseDTO,"물건 넣기가 성공하였습니다."));
     }
 
     //물건 빼기
-    @GetMapping("/api/locker/buyer/product/{lockerId}")
+    @GetMapping("api/locker/buyer/product/{lockerId}")
     public ResponseEntity<?> pushProductLocker(@PathVariable(value = "lockerId") long lockerId){
-        LockerProductResponseDTO lockerProductResponseDTO = lockerService.pushProduct(lockerId);
-        messageService.sendPushProductLocker(lockerId);
+        Locker locker = lockerService.findByIdLocker(lockerId);
+        LockerProductResponseDTO lockerProductResponseDTO = lockerService.pushProduct(locker);
+        messageService.sendPushProductLocker(locker);
         return ResponseEntity.ok().body(createResponse(lockerProductResponseDTO,"물건 빼기가 성공 하였습니다."));
     }
 

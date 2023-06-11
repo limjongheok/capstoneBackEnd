@@ -5,6 +5,8 @@ import capston.capston.saleProduct.model.SaleProduct;
 import java.util.List;
 
 public interface SaleProductRepositoryCustom {
-    List<SaleProduct> findNoneOfferProduct();
+    List<SaleProduct> findNoneOrderProduct();
+    List<SaleProduct> getProductList(String title);
+
 
 }

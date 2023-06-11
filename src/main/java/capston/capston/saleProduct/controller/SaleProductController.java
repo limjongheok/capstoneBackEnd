@@ -1,12 +1,12 @@
 package capston.capston.saleProduct.controller;
 
+import capston.capston.saleProduct.dto.SaleProductSearchDTO.SaleProductSearchResponseDTO;
 import capston.capston.saleProduct.dto.saleProductCreateDTO.SaleProductCreateRequestDTO;
 import capston.capston.saleProduct.dto.saleProductCreateDTO.SaleProductCreateResponseDTO;
 import capston.capston.saleProduct.dto.saleProductFindAll.SaleProductFindAllResponseDTO;
 import capston.capston.saleProduct.dto.saleProductFindId.SaleProductFindIdResponseDTO;
 import capston.capston.saleProduct.dto.saleProductFindmyDTO.SaleProductFindMyResponseDTO;
-import capston.capston.saleProduct.dto.saleProductOrderConfirmationDTO.SaleProductOrderConfirmationRequestDTO;
-import capston.capston.saleProduct.dto.saleProductOrderConfirmationDTO.SaleProductOrderConfirmationResponseDTO;
+
 import capston.capston.saleProduct.service.SaleProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,21 +54,24 @@ public class SaleProductController {
 
     // 상품 개별 조회
     @GetMapping("/api/saleproduct/find/{productId}")
-    public ResponseEntity<?> findProductId(@PathVariable(value = "productId") int productId, Authentication authentication){
+    public ResponseEntity<?> findProductId(@PathVariable(value = "productId") int productId){
         SaleProductFindIdResponseDTO saleProductFindIdResponseDTO = saleProductService.findProductId(productId);
 
         return ResponseEntity.ok().body(createResponse(saleProductFindIdResponseDTO,"상품 조회가 성공하였습니다."));
 
     }
 
-    // 상품 주문 확정
-    @PutMapping("/api/saleproduct/order/confirmation/{buyStudentId}/{productId}")
-    public ResponseEntity<?> orderConfirmation(@PathVariable(value = "buyStudentId") String buyStudentId, @PathVariable(value = "productId") long productId, @RequestBody SaleProductOrderConfirmationRequestDTO saleProductOrderConfirmationRequestDTO, Authentication authentication){
+    // 상품 검색
+    @GetMapping("/api/saleproduct/search/")
+    public  ResponseEntity<?> searchProduct(@RequestParam("search") String search){
+        log.info(search);
+        List<SaleProductSearchResponseDTO> saleProductSearchResponseDTOS = saleProductService.searchProducts(search);
 
-        SaleProductOrderConfirmationResponseDTO saleProductOrderConfirmationResponseDTO = saleProductService.orderConfirmation(buyStudentId,productId, saleProductOrderConfirmationRequestDTO.getOfferPrice(), authentication);
-
-        return ResponseEntity.ok().body(createResponse(saleProductOrderConfirmationResponseDTO,"상품 주문이 확정 되었습니다."));
+        return ResponseEntity.ok().body(createResponse(saleProductSearchResponseDTOS,"상품 검색이 성공하였습니다."));
     }
+
+
+
 
 
 

@@ -6,6 +6,7 @@ import capston.capston.security.Role;
 import capston.capston.user.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -20,7 +21,9 @@ public class UserJoinRequestDTO {
     @Email
     @NotBlank
     private String email;
+
     @NotBlank
+    @Length(min = 4)
     private String password;
 
     @NotBlank

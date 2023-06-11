@@ -13,17 +13,16 @@ public class UserInfoResponseDTO {
     private  String userName;
     private  String phoneNumber;
     private String studentId;
+    private  long point;
     private LocalDateTime createDate;
     private  LocalDateTime modifiedDate;
 
     @Builder
-    private UserInfoResponseDTO(String email, String userName, String phoneNumber,String studentId, LocalDateTime createDate, LocalDateTime modifiedDate) {
+    private UserInfoResponseDTO(String email, String userName, String phoneNumber,long point,String studentId, LocalDateTime createDate, LocalDateTime modifiedDate) {
         this.email = email;
         this.userName = userName;
-
-
+        this.point = point;
         this.studentId = studentId;
-
         this.phoneNumber = phoneNumber;
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
@@ -34,6 +33,7 @@ public class UserInfoResponseDTO {
                 .userName(user.getUserName())
                 .studentId(user.getStudentId())
                 .phoneNumber(user.getPhoneNumber())
+                .point(user.getPoint())
                 .createDate(user.getCreateDate())
                 .modifiedDate(user.getModifiedDate())
                 .build();

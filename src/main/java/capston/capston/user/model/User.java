@@ -75,6 +75,6 @@ public class User extends BaseTimeEntity {
     }
 
     private void salePoint(long point){
-        this.point =  point;
+        this.point =  this.point+ point;
     }
 }

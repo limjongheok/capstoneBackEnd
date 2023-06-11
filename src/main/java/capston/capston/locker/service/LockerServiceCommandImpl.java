@@ -7,6 +7,9 @@ import capston.capston.locker.dto.lockerPasswordCheckDTO.LockerPasswordCheckResp
 import capston.capston.locker.dto.lockerProdctDTO.LockerProductResponseDTO;
 import capston.capston.locker.dto.lockerUnassignedDTO.LockerUnassignedRequestDTO;
 import capston.capston.locker.dto.lockerUnassignedDTO.LockerUnassignedResponseDTO;
+import capston.capston.locker.model.Locker;
+import capston.capston.saleProduct.model.SaleProduct;
+import capston.capston.user.model.User;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
@@ -16,10 +19,10 @@ public interface LockerServiceCommandImpl {
     LockerCreateResponseDTO createLocker(LockerCreateRequestDTO lockerCreateRequestDTO);
 
     List<LockerUnassignedResponseDTO> unassignedLocker(LockerUnassignedRequestDTO lockerUnassignedRequestDTO);
-    LockerAssignResponseDTO assignLocker(String studentId, long productId, long lockerId, Authentication authentication);
+    Locker assignLocker(SaleProduct saleProduct, Authentication authentication);
 
     LockerPasswordCheckResponseDTO buyerCheckPassword(long lockerId, String lockerPassword);
     LockerPasswordCheckResponseDTO saleCheckPassword(long lockerId, String lockerPassword);
-    LockerProductResponseDTO putProduct(long lockerId);
-    LockerProductResponseDTO pushProduct(long lockerId);
+    LockerProductResponseDTO putProduct(Locker locker);
+    LockerProductResponseDTO pushProduct(Locker locker);
 }

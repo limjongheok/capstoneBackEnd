@@ -11,5 +11,9 @@ public interface LockerServiceQueryImpl {
     List<Locker> getNotAssignLocker(LockerUnassignedRequestDTO lockerUnassignedRequestDTO);
     Locker findByIdLocker(long id);
 
+    List<Locker> listNotAssignLocker();
+
+
+
 
 }

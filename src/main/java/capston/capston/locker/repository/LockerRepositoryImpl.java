@@ -27,9 +27,17 @@ public class LockerRepositoryImpl implements LockerRepositoryCustom{
         return locker.checkAssign.isFalse().and(locker.buildingNum.eq(buildingNum));
 
     }
+    private  BooleanExpression listNotAssignLocker(){
+        return locker.checkAssign.isFalse();
+    }
 
     @Override
     public List<Locker> getNotAssignLocker(int buildingNum) {
         return (List<Locker>) jpaQueryFactory.from(locker).where(NotAssignLocker(buildingNum)).fetch();
+    }
+
+    @Override
+    public List<Locker> ListNotAssignLocker() {
+        return (List<Locker>) jpaQueryFactory.from(locker).where(listNotAssignLocker()).fetch();
     }
 }

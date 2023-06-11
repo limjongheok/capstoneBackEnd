@@ -11,7 +11,10 @@ import java.util.List;
 public interface SaleProductRepository extends JpaRepository<SaleProduct,Long>, SaleProductRepositoryCustom {
 
     @Override
-    List<SaleProduct> findNoneOfferProduct();
+    List<SaleProduct> findNoneOrderProduct();
+
+    @Override
+    List<SaleProduct> getProductList(String title);
 
     List<SaleProduct> findAllByUser(User user);
 }

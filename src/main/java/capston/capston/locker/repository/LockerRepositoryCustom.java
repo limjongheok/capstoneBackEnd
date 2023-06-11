@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface LockerRepositoryCustom {
     List<Locker> getNotAssignLocker(int buildingNum);
+
+    List<Locker> ListNotAssignLocker();
 }
